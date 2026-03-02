@@ -76,20 +76,15 @@
             border: 2px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* Particle Background */
-        .particle-bg {
+        /* Canvas Particle Background */
+        #particleCanvas {
             position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.1) 0%, transparent 50%);
-            animation: particleFloat 20s infinite linear;
             pointer-events: none;
-        }
-
-        @keyframes particleFloat {
-            0% { transform: scale(1) rotate(0deg); }
-            50% { transform: scale(1.1) rotate(180deg); }
-            100% { transform: scale(1) rotate(360deg); }
+            z-index: 0;
         }
 
         /* Preloader */
@@ -892,7 +887,8 @@
         /* Achievements Panel */
         .achievements-panel,
         .leaderboard-panel,
-        .shop-panel {
+        .shop-panel,
+        .settings-panel {
             position: absolute;
             width: 100%;
             height: 100%;
@@ -1104,6 +1100,52 @@
             box-shadow: 0 5px 20px rgba(255, 217, 61, 0.5);
         }
 
+        /* Settings Panel */
+        .settings-option {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 15px 20px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .settings-option span {
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        .toggle-switch {
+            width: 50px;
+            height: 24px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 12px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .toggle-switch.active {
+            background: var(--primary);
+        }
+
+        .toggle-slider {
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.3s;
+        }
+
+        .toggle-switch.active .toggle-slider {
+            transform: translateX(26px);
+        }
+
         /* Toast Notifications */
         .toast-container {
             position: absolute;
@@ -1297,8 +1339,8 @@
                 </div>
             </div>
 
-            <!-- Particle Background -->
-            <div class="particle-bg" id="particleBg"></div>
+            <!-- Canvas Particle Background -->
+            <canvas id="particleCanvas"></canvas>
 
             <!-- Main Menu -->
             <div class="main-menu" id="mainMenu">
@@ -1312,57 +1354,57 @@
                         <div class="profile-avatar">
                             <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Master" alt="Player" id="playerAvatar">
                             <div class="avatar-edit" onclick="changeAvatar()">
-                                <i class="fas fa-camera"></i>
+                                <i class="fas fa-camera" aria-label="Change avatar"></i>
                             </div>
                         </div>
-                        <input type="text" class="player-name" id="playerName" value="PLAYER" maxlength="15">
+                        <input type="text" class="player-name" id="playerName" value="PLAYER" maxlength="15" aria-label="Player name">
                         <div class="player-stats">
                             <div class="stat-badge">
-                                <i class="fas fa-trophy"></i>
+                                <i class="fas fa-trophy" aria-hidden="true"></i>
                                 <span id="totalScore">0</span>
                             </div>
                             <div class="stat-badge">
-                                <i class="fas fa-gamepad"></i>
+                                <i class="fas fa-gamepad" aria-hidden="true"></i>
                                 <span id="gamesPlayed">0</span>
                             </div>
                             <div class="stat-badge">
-                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star" aria-hidden="true"></i>
                                 <span id="achievementsCount">0/20</span>
                             </div>
                         </div>
                     </div>
 
                     <div class="menu-buttons">
-                        <button class="menu-btn play-btn" onclick="showGameModes()">
-                            <i class="fas fa-play"></i>
+                        <button class="menu-btn play-btn" onclick="showGameModes()" aria-label="Play game">
+                            <i class="fas fa-play" aria-hidden="true"></i>
                             <span>PLAY NOW</span>
                             <div class="btn-glow"></div>
                         </button>
                         
-                        <button class="menu-btn" onclick="showAchievements()">
-                            <i class="fas fa-medal"></i>
+                        <button class="menu-btn" onclick="showAchievements()" aria-label="View achievements">
+                            <i class="fas fa-medal" aria-hidden="true"></i>
                             <span>ACHIEVEMENTS</span>
                         </button>
                         
-                        <button class="menu-btn" onclick="showLeaderboard()">
-                            <i class="fas fa-chart-line"></i>
+                        <button class="menu-btn" onclick="showLeaderboard()" aria-label="View leaderboard">
+                            <i class="fas fa-chart-line" aria-hidden="true"></i>
                             <span>LEADERBOARD</span>
                         </button>
                         
-                        <button class="menu-btn" onclick="showShop()">
-                            <i class="fas fa-store"></i>
+                        <button class="menu-btn" onclick="showShop()" aria-label="Visit shop">
+                            <i class="fas fa-store" aria-hidden="true"></i>
                             <span>SHOP</span>
                         </button>
                         
-                        <button class="menu-btn" onclick="showSettings()">
-                            <i class="fas fa-cog"></i>
+                        <button class="menu-btn" onclick="showSettings()" aria-label="Open settings">
+                            <i class="fas fa-cog" aria-hidden="true"></i>
                             <span>SETTINGS</span>
                         </button>
                     </div>
 
                     <div class="daily-challenge" id="dailyChallenge">
                         <div class="challenge-header">
-                            <i class="fas fa-calendar-day"></i>
+                            <i class="fas fa-calendar-day" aria-hidden="true"></i>
                             <span>DAILY CHALLENGE</span>
                         </div>
                         <div class="challenge-content">
@@ -1370,7 +1412,7 @@
                                 <span class="challenge-reward">🎁 +500 BONUS</span>
                                 <span class="challenge-time" id="challengeTimer">23:59:59</span>
                             </div>
-                            <button class="challenge-btn" onclick="startDailyChallenge()">
+                            <button class="challenge-btn" onclick="startDailyChallenge()" aria-label="Play daily challenge">
                                 PLAY DAILY
                             </button>
                         </div>
@@ -1380,14 +1422,14 @@
 
             <!-- Game Modes Selection -->
             <div class="game-modes" id="gameModes" style="display: none;">
-                <button class="back-btn" onclick="showMainMenu()">
-                    <i class="fas fa-arrow-left"></i> BACK
+                <button class="back-btn" onclick="showMainMenu()" aria-label="Go back">
+                    <i class="fas fa-arrow-left" aria-hidden="true"></i> BACK
                 </button>
                 
                 <h2 class="section-title">SELECT GAME MODE</h2>
                 
                 <div class="modes-grid">
-                    <div class="mode-card classic" onclick="startGame('classic')">
+                    <div class="mode-card classic" onclick="startGame('classic')" tabindex="0" role="button" aria-label="Classic mode">
                         <div class="mode-icon">🎯</div>
                         <h3>CLASSIC</h3>
                         <p>Match all pairs to win</p>
@@ -1397,7 +1439,7 @@
                         </div>
                     </div>
 
-                    <div class="mode-card timed" onclick="startGame('timed')">
+                    <div class="mode-card timed" onclick="startGame('timed')" tabindex="0" role="button" aria-label="Timed challenge mode">
                         <div class="mode-icon">⏱️</div>
                         <h3>TIMED CHALLENGE</h3>
                         <p>Race against the clock</p>
@@ -1407,7 +1449,7 @@
                         </div>
                     </div>
 
-                    <div class="mode-card move" onclick="startGame('move')">
+                    <div class="mode-card move" onclick="startGame('move')" tabindex="0" role="button" aria-label="Move master mode">
                         <div class="mode-icon">🎮</div>
                         <h3>MOVE MASTER</h3>
                         <p>Limited moves only</p>
@@ -1417,17 +1459,17 @@
                         </div>
                     </div>
 
-                    <div class="mode-card endless" onclick="startGame('endless')">
+                    <div class="mode-card endless" onclick="startGame('endless')" tabindex="0" role="button" aria-label="Endless mode">
                         <div class="mode-icon">♾️</div>
                         <h3>ENDLESS</h3>
                         <p>Increasing difficulty</p>
                         <div class="mode-features">
-                            <span>3→6→8 Grid</span>
+                            <span>4→6→8 Grid</span>
                             <span>Infinite gameplay</span>
                         </div>
                     </div>
 
-                    <div class="mode-card memory" onclick="startGame('memory')">
+                    <div class="mode-card memory" onclick="startGame('memory')" tabindex="0" role="button" aria-label="Memory lane mode">
                         <div class="mode-icon">🧠</div>
                         <h3>MEMORY LANE</h3>
                         <p>Remember positions</p>
@@ -1437,7 +1479,7 @@
                         </div>
                     </div>
 
-                    <div class="mode-card challenge" onclick="startGame('challenge')">
+                    <div class="mode-card challenge" onclick="startGame('challenge')" tabindex="0" role="button" aria-label="Challenge mode">
                         <div class="mode-icon">⚡</div>
                         <h3>CHALLENGE MODE</h3>
                         <p>Special conditions</p>
@@ -1449,8 +1491,8 @@
                 </div>
 
                 <div class="quick-play">
-                    <button class="quick-play-btn" onclick="startQuickGame()">
-                        <i class="fas fa-bolt"></i>
+                    <button class="quick-play-btn" onclick="startQuickGame()" aria-label="Quick play 60 seconds">
+                        <i class="fas fa-bolt" aria-hidden="true"></i>
                         QUICK PLAY (60 SEC)
                     </button>
                 </div>
@@ -1459,24 +1501,24 @@
             <!-- Game Board -->
             <div class="game-board" id="gameBoard" style="display: none;">
                 <div class="game-header">
-                    <button class="header-btn pause-btn" onclick="togglePause()">
+                    <button class="header-btn pause-btn" onclick="togglePause()" aria-label="Pause game">
                         <i class="fas fa-pause"></i>
                     </button>
                     
                     <div class="game-stats">
                         <div class="stat-group">
                             <div class="stat-item">
-                                <i class="fas fa-arrows-alt"></i>
+                                <i class="fas fa-arrows-alt" aria-hidden="true"></i>
                                 <span class="stat-value" id="gameMoves">0</span>
                                 <span class="stat-label">Moves</span>
                             </div>
                             <div class="stat-item">
-                                <i class="fas fa-clock"></i>
+                                <i class="fas fa-clock" aria-hidden="true"></i>
                                 <span class="stat-value" id="gameTime">00:00</span>
                                 <span class="stat-label">Time</span>
                             </div>
                             <div class="stat-item">
-                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star" aria-hidden="true"></i>
                                 <span class="stat-value" id="gameScore">0</span>
                                 <span class="stat-label">Score</span>
                             </div>
@@ -1487,36 +1529,36 @@
                         </div>
                     </div>
 
-                    <button class="header-btn menu-btn" onclick="pauseAndMenu()">
+                    <button class="header-btn menu-btn" onclick="pauseAndMenu()" aria-label="Open menu">
                         <i class="fas fa-grid"></i>
                     </button>
                 </div>
 
                 <div class="game-area">
-                    <div class="cards-container" id="cardsContainer"></div>
+                    <div class="cards-container" id="cardsContainer" role="grid" aria-label="Game cards"></div>
                 </div>
 
                 <div class="game-footer">
                     <div class="combo-counter" id="comboCounter">
-                        <i class="fas fa-fire"></i>
+                        <i class="fas fa-fire" aria-hidden="true"></i>
                         <span id="comboCount">0</span>
                     </div>
                     
                     <div class="power-ups">
-                        <button class="power-up" onclick="usePowerUp('hint')" id="hintBtn">
-                            <i class="fas fa-lightbulb"></i>
+                        <button class="power-up" onclick="usePowerUp('hint')" id="hintBtn" aria-label="Hint power-up">
+                            <i class="fas fa-lightbulb" aria-hidden="true"></i>
                             <span class="power-count" id="hintCount">3</span>
                         </button>
-                        <button class="power-up" onclick="usePowerUp('shuffle')" id="shuffleBtn">
-                            <i class="fas fa-random"></i>
+                        <button class="power-up" onclick="usePowerUp('shuffle')" id="shuffleBtn" aria-label="Shuffle power-up">
+                            <i class="fas fa-random" aria-hidden="true"></i>
                             <span class="power-count" id="shuffleCount">2</span>
                         </button>
-                        <button class="power-up" onclick="usePowerUp('time')" id="timeBtn">
-                            <i class="fas fa-hourglass-half"></i>
+                        <button class="power-up" onclick="usePowerUp('time')" id="timeBtn" aria-label="Time boost power-up">
+                            <i class="fas fa-hourglass-half" aria-hidden="true"></i>
                             <span class="power-count" id="timeCount">1</span>
                         </button>
-                        <button class="power-up" onclick="usePowerUp('peek')" id="peekBtn">
-                            <i class="fas fa-eye"></i>
+                        <button class="power-up" onclick="usePowerUp('peek')" id="peekBtn" aria-label="Peek power-up">
+                            <i class="fas fa-eye" aria-hidden="true"></i>
                             <span class="power-count" id="peekCount">1</span>
                         </button>
                     </div>
@@ -1527,29 +1569,29 @@
             <div class="pause-menu" id="pauseMenu" style="display: none;">
                 <div class="pause-content">
                     <h2>GAME PAUSED</h2>
-                    <button class="pause-option" onclick="resumeGame()">
-                        <i class="fas fa-play"></i> RESUME
+                    <button class="pause-option" onclick="resumeGame()" aria-label="Resume game">
+                        <i class="fas fa-play" aria-hidden="true"></i> RESUME
                     </button>
-                    <button class="pause-option" onclick="restartGame()">
-                        <i class="fas fa-redo"></i> RESTART
+                    <button class="pause-option" onclick="restartGame()" aria-label="Restart game">
+                        <i class="fas fa-redo" aria-hidden="true"></i> RESTART
                     </button>
-                    <button class="pause-option" onclick="showGameModes()">
-                        <i class="fas fa-grid"></i> CHANGE MODE
+                    <button class="pause-option" onclick="showGameModes()" aria-label="Change game mode">
+                        <i class="fas fa-grid" aria-hidden="true"></i> CHANGE MODE
                     </button>
-                    <button class="pause-option" onclick="showMainMenu()">
-                        <i class="fas fa-home"></i> MAIN MENU
+                    <button class="pause-option" onclick="showMainMenu()" aria-label="Return to main menu">
+                        <i class="fas fa-home" aria-hidden="true"></i> MAIN MENU
                     </button>
                 </div>
             </div>
 
             <!-- Achievements Panel -->
             <div class="achievements-panel" id="achievementsPanel" style="display: none;">
-                <button class="back-btn" onclick="showMainMenu()">
-                    <i class="fas fa-arrow-left"></i> BACK
+                <button class="back-btn" onclick="showMainMenu()" aria-label="Go back">
+                    <i class="fas fa-arrow-left" aria-hidden="true"></i> BACK
                 </button>
                 
                 <h2 class="section-title">
-                    <i class="fas fa-medal"></i> ACHIEVEMENTS
+                    <i class="fas fa-medal" aria-hidden="true"></i> ACHIEVEMENTS
                 </h2>
                 
                 <div class="achievements-grid" id="achievementsGrid"></div>
@@ -1564,45 +1606,84 @@
 
             <!-- Leaderboard Panel -->
             <div class="leaderboard-panel" id="leaderboardPanel" style="display: none;">
-                <button class="back-btn" onclick="showMainMenu()">
-                    <i class="fas fa-arrow-left"></i> BACK
+                <button class="back-btn" onclick="showMainMenu()" aria-label="Go back">
+                    <i class="fas fa-arrow-left" aria-hidden="true"></i> BACK
                 </button>
                 
                 <h2 class="section-title">
-                    <i class="fas fa-chart-line"></i> LEADERBOARD
+                    <i class="fas fa-chart-line" aria-hidden="true"></i> LEADERBOARD
                 </h2>
                 
                 <div class="leaderboard-tabs">
-                    <button class="tab-btn active" onclick="switchLeaderboard('daily')">DAILY</button>
-                    <button class="tab-btn" onclick="switchLeaderboard('weekly')">WEEKLY</button>
-                    <button class="tab-btn" onclick="switchLeaderboard('alltime')">ALL TIME</button>
+                    <button class="tab-btn active" onclick="switchLeaderboard('daily')" aria-label="Daily leaderboard">DAILY</button>
+                    <button class="tab-btn" onclick="switchLeaderboard('weekly')" aria-label="Weekly leaderboard">WEEKLY</button>
+                    <button class="tab-btn" onclick="switchLeaderboard('alltime')" aria-label="All-time leaderboard">ALL TIME</button>
                 </div>
                 
                 <div class="leaderboard-list" id="leaderboardList"></div>
                 
                 <div class="player-rank" id="playerRank"></div>
                 
-                <button class="share-score-btn" onclick="shareScore()">
-                    <i class="fas fa-share-alt"></i> SHARE YOUR SCORE
+                <button class="share-score-btn" onclick="shareScore()" aria-label="Share your score">
+                    <i class="fas fa-share-alt" aria-hidden="true"></i> SHARE YOUR SCORE
                 </button>
             </div>
 
             <!-- Shop Panel -->
             <div class="shop-panel" id="shopPanel" style="display: none;">
-                <button class="back-btn" onclick="showMainMenu()">
-                    <i class="fas fa-arrow-left"></i> BACK
+                <button class="back-btn" onclick="showMainMenu()" aria-label="Go back">
+                    <i class="fas fa-arrow-left" aria-hidden="true"></i> BACK
                 </button>
                 
                 <h2 class="section-title">
-                    <i class="fas fa-store"></i> POWER-UP SHOP
+                    <i class="fas fa-store" aria-hidden="true"></i> POWER-UP SHOP
                 </h2>
                 
                 <div class="currency-display">
-                    <i class="fas fa-coins"></i>
+                    <i class="fas fa-coins" aria-hidden="true"></i>
                     <span id="playerCoins">1000</span>
                 </div>
                 
                 <div class="shop-items" id="shopItems"></div>
+            </div>
+
+            <!-- Settings Panel -->
+            <div class="settings-panel" id="settingsPanel" style="display: none;">
+                <button class="back-btn" onclick="showMainMenu()" aria-label="Go back">
+                    <i class="fas fa-arrow-left" aria-hidden="true"></i> BACK
+                </button>
+                
+                <h2 class="section-title">
+                    <i class="fas fa-cog" aria-hidden="true"></i> SETTINGS
+                </h2>
+                
+                <div class="settings-option">
+                    <span>Sound</span>
+                    <div class="toggle-switch" id="soundToggle" onclick="toggleSetting('sound')" role="switch" aria-checked="true">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+                
+                <div class="settings-option">
+                    <span>Music</span>
+                    <div class="toggle-switch" id="musicToggle" onclick="toggleSetting('music')" role="switch" aria-checked="true">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+                
+                <div class="settings-option">
+                    <span>Vibration</span>
+                    <div class="toggle-switch" id="vibrationToggle" onclick="toggleSetting('vibration')" role="switch" aria-checked="true">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+                
+                <div class="settings-option">
+                    <span>Animations</span>
+                    <div class="toggle-switch" id="animationsToggle" onclick="toggleSetting('animations')" role="switch" aria-checked="true">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
             </div>
 
             <!-- Victory/Game Over Modal -->
@@ -1616,8 +1697,8 @@
                         <p>Score: <span id="resultScore">0</span></p>
                     </div>
                     <div class="result-buttons">
-                        <button onclick="playAgain()">PLAY AGAIN</button>
-                        <button onclick="showMainMenu()">MENU</button>
+                        <button onclick="playAgain()" aria-label="Play again">PLAY AGAIN</button>
+                        <button onclick="showMainMenu()" aria-label="Return to menu">MENU</button>
                     </div>
                 </div>
             </div>
@@ -1631,93 +1712,91 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1"></script>
     <!-- Embedded JavaScript -->
     <script>
-        // ==================== POKI INTEGRATION ====================
-        let pokiSDK = null;
-        let pokiInitialized = false;
-
-        function initPokiSDK() {
-            if (typeof PokiSDK === 'undefined') {
-                console.warn('Poki SDK not loaded (adblock?)');
-                return;
-            }
-            PokiSDK.init()
-                .then(() => {
-                    pokiSDK = PokiSDK;
-                    pokiInitialized = true;
-                    console.log('Poki SDK initialized');
-                })
-                .catch((err) => {
-                    console.warn('Poki SDK init failed (adblock likely)', err);
-                });
-        }
-
-        let isGameplayActive = false;
-
-        function pokiGameplayStart() {
-            if (!pokiInitialized || isGameplayActive) return;
-            pokiSDK.gameplayStart();
-            isGameplayActive = true;
-        }
-
-        function pokiGameplayStop() {
-            if (!pokiInitialized || !isGameplayActive) return;
-            pokiSDK.gameplayStop();
-            isGameplayActive = false;
-        }
-
-        function pokiShowCommercial() {
-            if (!pokiInitialized) return Promise.reject('No SDK');
-            return pokiSDK.commercialBreak().catch(() => {});
-        }
-
-        function pokiShowRewarded() {
-            if (!pokiInitialized) return Promise.reject('No SDK');
-            return pokiSDK.rewardedBreak().catch(() => false);
-        }
-
-        // ==================== SAFE LOCALSTORAGE ====================
-        function safeLocalStorageGet(key, defaultValue) {
-            try {
-                const val = localStorage.getItem(key);
-                return val !== null ? val : defaultValue;
-            } catch (e) {
-                return defaultValue;
-            }
-        }
-
-        function safeLocalStorageSet(key, value) {
-            try {
-                localStorage.setItem(key, value);
-            } catch (e) {}
-        }
-
-        function safeLocalStorageGetJSON(key, defaultValue) {
-            try {
-                const val = localStorage.getItem(key);
-                return val ? JSON.parse(val) : defaultValue;
-            } catch (e) {
-                return defaultValue;
-            }
-        }
-
-        function safeLocalStorageSetJSON(key, value) {
-            try {
-                localStorage.setItem(key, JSON.stringify(value));
-            } catch (e) {}
-        }
-
-        // ==================== GAME CONFIG ====================
+        // ==================== GLOBAL CONFIGURATION ====================
         const CONFIG = {
-            gridSizes: { easy: 3, medium: 4, hard: 6 },
+            gridSizes: { easy: 4, medium: 4, hard: 6 }, // even numbers only
+            difficultyProgression: [4, 6, 8, 10], // for endless mode
             timeLimits: { timed: 60, quick: 60 },
             moveLimits: { move: 30 },
             baseScore: 100,
             comboMultiplier: 0.5,
-            powerUpCosts: { hint: 100, shuffle: 150, time: 200, peek: 250 }
+            powerUpCosts: { hint: 100, shuffle: 150, time: 200, peek: 250 },
+            memoryPhaseDuration: 5000, // 5 seconds
+            challengeEffects: ['timeLimit', 'shuffleEvery10s', 'reverseControls', 'hiddenSymbols']
+        };
+
+        // ==================== POKI SDK WRAPPER ====================
+        const Poki = (() => {
+            let sdk = null;
+            let initialized = false;
+            let gameplayActive = false;
+
+            return {
+                init: () => {
+                    if (typeof PokiSDK === 'undefined') {
+                        console.warn('Poki SDK not loaded (adblock?)');
+                        return;
+                    }
+                    PokiSDK.init()
+                        .then(() => {
+                            sdk = PokiSDK;
+                            initialized = true;
+                        })
+                        .catch(() => {});
+                },
+                gameplayStart: () => {
+                    if (!initialized || gameplayActive) return;
+                    sdk.gameplayStart();
+                    gameplayActive = true;
+                },
+                gameplayStop: () => {
+                    if (!initialized || !gameplayActive) return;
+                    sdk.gameplayStop();
+                    gameplayActive = false;
+                },
+                showCommercial: () => {
+                    if (!initialized) return Promise.reject();
+                    return sdk.commercialBreak().catch(() => {});
+                },
+                showRewarded: () => {
+                    if (!initialized) return Promise.reject();
+                    return sdk.rewardedBreak().catch(() => false);
+                }
+            };
+        })();
+
+        // ==================== LOCAL STORAGE HELPERS ====================
+        const Storage = {
+            get: (key, defaultValue) => {
+                try {
+                    const val = localStorage.getItem(key);
+                    return val !== null ? val : defaultValue;
+                } catch {
+                    return defaultValue;
+                }
+            },
+            set: (key, value) => {
+                try {
+                    localStorage.setItem(key, value);
+                } catch {}
+            },
+            getJSON: (key, defaultValue) => {
+                try {
+                    const val = localStorage.getItem(key);
+                    return val ? JSON.parse(val) : defaultValue;
+                } catch {
+                    return defaultValue;
+                }
+            },
+            setJSON: (key, value) => {
+                try {
+                    localStorage.setItem(key, JSON.stringify(value));
+                } catch {}
+            }
         };
 
         // ==================== GAME STATE ====================
-        let gameState = {
+        const GameState = {
             currentMode: 'classic',
             cards: [],
             flippedIndices: [],
@@ -1731,163 +1810,118 @@
             gamePaused: false,
             gameOver: false,
             difficulty: 'medium',
-            playerName: safeLocalStorageGet('playerName', 'PLAYER'),
-            playerAvatar: safeLocalStorageGet('playerAvatar', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Master'),
-            totalScore: parseInt(safeLocalStorageGet('totalScore', '0')) || 0,
-            gamesPlayed: parseInt(safeLocalStorageGet('gamesPlayed', '0')) || 0,
-            coins: parseInt(safeLocalStorageGet('coins', '1000')) || 1000,
+            playerName: Storage.get('playerName', 'PLAYER'),
+            playerAvatar: Storage.get('playerAvatar', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Master'),
+            totalScore: parseInt(Storage.get('totalScore', '0')) || 0,
+            gamesPlayed: parseInt(Storage.get('gamesPlayed', '0')) || 0,
+            coins: parseInt(Storage.get('coins', '1000')) || 1000,
             powerUps: {
-                hint: parseInt(safeLocalStorageGet('powerUpHint', '3')) || 3,
-                shuffle: parseInt(safeLocalStorageGet('powerUpShuffle', '2')) || 2,
-                time: parseInt(safeLocalStorageGet('powerUpTime', '1')) || 1,
-                peek: parseInt(safeLocalStorageGet('powerUpPeek', '1')) || 1
+                hint: parseInt(Storage.get('powerUpHint', '3')) || 3,
+                shuffle: parseInt(Storage.get('powerUpShuffle', '2')) || 2,
+                time: parseInt(Storage.get('powerUpTime', '1')) || 1,
+                peek: parseInt(Storage.get('powerUpPeek', '1')) || 1
             },
-            achievements: safeLocalStorageGetJSON('achievements', {}),
-            leaderboard: safeLocalStorageGetJSON('leaderboard', { daily: [], weekly: [], alltime: [] }),
-            settings: safeLocalStorageGetJSON('settings', { sound: true, music: true, vibration: true, animations: true })
+            achievements: Storage.getJSON('achievements', {}),
+            leaderboard: Storage.getJSON('leaderboard', { daily: [], weekly: [], alltime: [] }),
+            settings: Storage.getJSON('settings', { sound: true, music: true, vibration: true, animations: true }),
+            memoryPhase: false,
+            firstMoveMade: false,
+            challengeEffect: null
         };
 
-        // ==================== AUDIO SYSTEM (Web Audio, no external) ====================
-        class AudioSystem {
-            constructor() {
-                this.soundEnabled = gameState.settings.sound;
-                this.audioContext = null;
+        // ==================== AUDIO SYSTEM ====================
+        const AudioSystem = (() => {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const sounds = {
+                flip: { freq: 800, duration: 0.1, gain: 0.1 },
+                match: { freq: 1200, duration: 0.2, gain: 0.1 },
+                win: { freq: 600, duration: 0.3, gain: 0.1 },
+                lose: { freq: 300, duration: 0.3, gain: 0.1 },
+                click: { freq: 1000, duration: 0.05, gain: 0.05 },
+                powerup: { freq: 1400, duration: 0.2, gain: 0.1 }
+            };
+
+            return {
+                play: (type) => {
+                    if (!GameState.settings.sound) return;
+                    const s = sounds[type];
+                    if (!s) return;
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.frequency.value = s.freq;
+                    gain.gain.value = s.gain;
+                    osc.start();
+                    osc.stop(ctx.currentTime + s.duration);
+                }
+            };
+        })();
+
+        // ==================== VIBRATION HELPER ====================
+        const vibrate = (pattern) => {
+            if (GameState.settings.vibration && navigator.vibrate) {
+                navigator.vibrate(pattern);
             }
-            init() {
-                if (!this.audioContext) {
-                    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        };
+
+        // ==================== UI UPDATES ====================
+        function updateUI() {
+            document.getElementById('hintCount').textContent = GameState.powerUps.hint;
+            document.getElementById('shuffleCount').textContent = GameState.powerUps.shuffle;
+            document.getElementById('timeCount').textContent = GameState.powerUps.time;
+            document.getElementById('peekCount').textContent = GameState.powerUps.peek;
+            document.getElementById('playerCoins').textContent = GameState.coins;
+            document.getElementById('totalScore').textContent = GameState.totalScore;
+            document.getElementById('gamesPlayed').textContent = GameState.gamesPlayed;
+            const unlockedCount = Object.keys(GameState.achievements).length;
+            document.getElementById('achievementsCount').textContent = `${unlockedCount}/${achievementsList.length}`;
+        }
+
+        // ==================== PARTICLE BACKGROUND (Canvas) ====================
+        (() => {
+            const canvas = document.getElementById('particleCanvas');
+            const ctx = canvas.getContext('2d');
+            let width, height;
+            let particles = [];
+
+            function initParticles() {
+                width = canvas.width = canvas.clientWidth;
+                height = canvas.height = canvas.clientHeight;
+                particles = [];
+                for (let i = 0; i < 50; i++) {
+                    particles.push({
+                        x: Math.random() * width,
+                        y: Math.random() * height,
+                        radius: Math.random() * 3 + 1,
+                        speedX: (Math.random() - 0.5) * 0.5,
+                        speedY: (Math.random() - 0.5) * 0.5,
+                        opacity: Math.random() * 0.5 + 0.2
+                    });
                 }
             }
-            play(type) {
-                if (!this.soundEnabled) return;
-                this.init();
-                const osc = this.audioContext.createOscillator();
-                const gain = this.audioContext.createGain();
-                osc.connect(gain);
-                gain.connect(this.audioContext.destination);
-                const now = this.audioContext.currentTime;
-                switch(type) {
-                    case 'flip': osc.frequency.value = 800; gain.gain.value = 0.1; osc.start(now); osc.stop(now+0.1); break;
-                    case 'match': osc.frequency.value = 1200; gain.gain.value = 0.1; osc.start(now); osc.stop(now+0.2); break;
-                    case 'win': osc.frequency.value = 600; gain.gain.value = 0.1; osc.start(now); osc.stop(now+0.3); break;
-                    case 'lose': osc.frequency.value = 300; gain.gain.value = 0.1; osc.start(now); osc.stop(now+0.3); break;
-                    case 'click': osc.frequency.value = 1000; gain.gain.value = 0.05; osc.start(now); osc.stop(now+0.05); break;
-                    case 'powerup': osc.frequency.value = 1400; gain.gain.value = 0.1; osc.start(now); osc.stop(now+0.2); break;
-                }
-            }
-            toggleSound() {
-                this.soundEnabled = !this.soundEnabled;
-                gameState.settings.sound = this.soundEnabled;
-                safeLocalStorageSetJSON('settings', gameState.settings);
-            }
-        }
-        const audio = new AudioSystem();
 
-        // ==================== REWARDED AD DIALOG ====================
-        function showRewardedAdDialog(powerUpType) {
-            const dialog = document.createElement('div');
-            dialog.className = 'rewarded-dialog';
-            dialog.innerHTML = `
-                <div class="rewarded-content">
-                    <h3>Out of ${powerUpType}!</h3>
-                    <p>Watch a short ad to get one free ${powerUpType}?</p>
-                    <div class="rewarded-buttons">
-                        <button class="reward-no green-btn">Continue</button>
-                        <button class="reward-yes film-btn">🎬 Watch Ad</button>
-                    </div>
-                </div>
-            `;
-            document.body.appendChild(dialog);
-
-            return new Promise((resolve) => {
-                dialog.querySelector('.reward-no').onclick = () => {
-                    dialog.remove();
-                    resolve(false);
-                };
-                dialog.querySelector('.reward-yes').onclick = async () => {
-                    dialog.remove();
-                    const success = await pokiShowRewarded();
-                    resolve(success);
-                };
-            });
-        }
-
-        // ==================== POWER-UP FUNCTIONS ====================
-        async function usePowerUp(type) {
-            if (!gameState.gameActive || gameState.gamePaused) return;
-
-            if (gameState.powerUps[type] > 0) {
-                gameState.powerUps[type]--;
-                safeLocalStorageSet(`powerUp${type.charAt(0).toUpperCase() + type.slice(1)}`, gameState.powerUps[type]);
-                updateUI();
-                activatePowerUp(type);
-                audio.play('powerup');
-            } else {
-                audio.play('click');
-                const watched = await showRewardedAdDialog(type);
-                if (watched) {
-                    activatePowerUp(type);
-                    audio.play('powerup');
-                    showToast('Thanks for watching!', 'success');
-                }
-            }
-        }
-
-        function activatePowerUp(type) {
-            switch(type) {
-                case 'hint': useHint(); break;
-                case 'shuffle': useShuffle(); break;
-                case 'time': useTime(); break;
-                case 'peek': usePeek(); break;
-            }
-        }
-
-        function useHint() {
-            const unmatched = gameState.cards.filter(c => !c.isMatched);
-            if (unmatched.length === 0) return;
-            const randomIndex = Math.floor(Math.random() * unmatched.length / 2) * 2;
-            const symbol = unmatched[randomIndex].symbol;
-            const hintCards = gameState.cards.filter(c => c.symbol === symbol && !c.isMatched);
-            hintCards.forEach(card => {
-                card.element.style.animation = 'pulse 0.5s 3';
-                setTimeout(() => { card.element.style.animation = ''; }, 1500);
-            });
-        }
-
-        function useShuffle() {
-            const unmatched = gameState.cards.filter(c => !c.isMatched);
-            const unmatchedIndices = unmatched.map(c => c.id);
-            unmatched.forEach(card => card.element.remove());
-            const symbols = unmatched.map(c => c.symbol);
-            for (let i = symbols.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [symbols[i], symbols[j]] = [symbols[j], symbols[i]];
-            }
-            symbols.forEach((symbol, i) => {
-                const card = gameState.cards[unmatchedIndices[i]];
-                card.symbol = symbol;
-                card.element.querySelector('.card-front').textContent = symbol;
-                card.element.style.animation = 'fadeIn 0.5s';
-                setTimeout(() => { card.element.style.animation = ''; }, 500);
-            });
-        }
-
-        function useTime() {
-            gameState.timeLeft += 30;
-            document.getElementById('gameTime').textContent = formatTime(gameState.timeLeft);
-            showToast('+30 seconds!', 'success');
-        }
-
-        function usePeek() {
-            gameState.cards.forEach(card => {
-                if (!card.isMatched) card.element.classList.add('flipped');
-            });
-            setTimeout(() => {
-                gameState.cards.forEach(card => {
-                    if (!card.isMatched && !card.isFlipped) card.element.classList.remove('flipped');
+            function animateParticles() {
+                ctx.clearRect(0, 0, width, height);
+                particles.forEach(p => {
+                    p.x += p.speedX;
+                    p.y += p.speedY;
+                    if (p.x < 0) p.x = width;
+                    if (p.x > width) p.x = 0;
+                    if (p.y < 0) p.y = height;
+                    if (p.y > height) p.y = 0;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(255,255,255,${p.opacity})`;
+                    ctx.fill();
                 });
-            }, 1000);
-        }
+                requestAnimationFrame(animateParticles);
+            }
+
+            window.addEventListener('resize', initParticles);
+            initParticles();
+            animateParticles();
+        })();
 
         // ==================== CARD SYMBOLS ====================
         const cardSymbols = [
@@ -1899,15 +1933,27 @@
             '🦎', '🐙', '🦑', '🦐', '🦞', '🐠', '🐟', '🐡'
         ];
 
+        // ==================== ACHIEVEMENTS LIST ====================
+        const achievementsList = [
+            { id: 'first_win', title: 'First Victory', description: 'Win your first game', icon: '🏆', requirement: 1, type: 'wins', points: 100 },
+            { id: 'speed_demon', title: 'Speed Demon', description: 'Complete a game in under 30 seconds', icon: '⚡', requirement: 30, type: 'time', points: 200 },
+            { id: 'perfect_game', title: 'Perfect Match', description: 'Complete a game with 0 mistakes', icon: '💯', requirement: 0, type: 'mistakes', points: 500 },
+            { id: 'combo_master', title: 'Combo Master', description: 'Achieve a 10x combo', icon: '🔥', requirement: 10, type: 'combo', points: 300 },
+            { id: 'collector', title: 'Collector', description: 'Play 100 games', icon: '🎮', requirement: 100, type: 'games', points: 400 },
+            { id: 'millionaire', title: 'Millionaire', description: 'Earn 10,000 total score', icon: '💰', requirement: 10000, type: 'score', points: 1000 },
+            { id: 'daily_champion', title: 'Daily Champion', description: 'Complete the daily challenge 7 days in a row', icon: '📅', requirement: 7, type: 'daily', points: 700 },
+            { id: 'power_user', title: 'Power User', description: 'Use 50 power-ups', icon: '⚡', requirement: 50, type: 'powerups', points: 600 }
+        ];
+
         // ==================== INITIALIZATION ====================
         document.addEventListener('DOMContentLoaded', () => {
-            initPokiSDK();
+            Poki.init();
             initPreloader();
             loadPlayerData();
             updateUI();
-            initParticles();
             startDailyChallengeTimer();
-            // Fallback for Font Awesome if CDN fails
+            setupKeyboardNav();
+            // Font Awesome fallback
             if (typeof fa === 'undefined') {
                 const emojiMap = {
                     'fa-play': '▶️', 'fa-medal': '🏅', 'fa-chart-line': '📊', 'fa-store': '🏪',
@@ -1950,99 +1996,138 @@
             }, 100);
         }
 
-        function initParticles() {
-            const particleBg = document.getElementById('particleBg');
-            for (let i = 0; i < 50; i++) {
-                const particle = document.createElement('div');
-                particle.style.position = 'absolute';
-                particle.style.width = Math.random() * 5 + 'px';
-                particle.style.height = particle.style.width;
-                particle.style.background = `rgba(255,255,255,${Math.random() * 0.5})`;
-                particle.style.borderRadius = '50%';
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.top = Math.random() * 100 + '%';
-                particle.style.animation = `float ${Math.random() * 10 + 5}s linear infinite`;
-                particleBg.appendChild(particle);
-            }
-        }
-
         function loadPlayerData() {
-            document.getElementById('playerName').value = gameState.playerName;
-            document.getElementById('playerAvatar').src = gameState.playerAvatar;
-            document.getElementById('totalScore').textContent = gameState.totalScore;
-            document.getElementById('gamesPlayed').textContent = gameState.gamesPlayed;
-            document.getElementById('playerCoins').textContent = gameState.coins;
-            const unlockedCount = Object.keys(gameState.achievements).length;
+            document.getElementById('playerName').value = GameState.playerName;
+            document.getElementById('playerAvatar').src = GameState.playerAvatar;
+            document.getElementById('totalScore').textContent = GameState.totalScore;
+            document.getElementById('gamesPlayed').textContent = GameState.gamesPlayed;
+            document.getElementById('playerCoins').textContent = GameState.coins;
+            const unlockedCount = Object.keys(GameState.achievements).length;
             document.getElementById('achievementsCount').textContent = `${unlockedCount}/${achievementsList.length}`;
-        }
-
-        function updateUI() {
-            document.getElementById('hintCount').textContent = gameState.powerUps.hint;
-            document.getElementById('shuffleCount').textContent = gameState.powerUps.shuffle;
-            document.getElementById('timeCount').textContent = gameState.powerUps.time;
-            document.getElementById('peekCount').textContent = gameState.powerUps.peek;
         }
 
         // ==================== NAVIGATION ====================
         function showMainMenu() {
-            pokiGameplayStop();
+            Poki.gameplayStop();
             document.getElementById('gameModes').style.display = 'none';
             document.getElementById('gameBoard').style.display = 'none';
             document.getElementById('achievementsPanel').style.display = 'none';
             document.getElementById('leaderboardPanel').style.display = 'none';
             document.getElementById('shopPanel').style.display = 'none';
+            document.getElementById('settingsPanel').style.display = 'none';
             document.getElementById('pauseMenu').style.display = 'none';
             document.getElementById('resultModal').style.display = 'none';
             document.getElementById('mainMenu').style.display = 'flex';
-            firstMoveMade = false;
-            if (gameState.timer) clearInterval(gameState.timer);
-            audio.play('click');
+            GameState.firstMoveMade = false;
+            if (GameState.timer) clearInterval(GameState.timer);
+            AudioSystem.play('click');
         }
 
         function showGameModes() {
-            audio.play('click');
+            AudioSystem.play('click');
             document.getElementById('mainMenu').style.display = 'none';
             document.getElementById('gameModes').style.display = 'block';
         }
 
-        // ==================== GAME START ====================
-        let firstMoveMade = false;
+        function showAchievements() {
+            AudioSystem.play('click');
+            document.getElementById('mainMenu').style.display = 'none';
+            document.getElementById('achievementsPanel').style.display = 'block';
+            renderAchievements();
+        }
 
+        function showLeaderboard() {
+            AudioSystem.play('click');
+            document.getElementById('mainMenu').style.display = 'none';
+            document.getElementById('leaderboardPanel').style.display = 'block';
+            switchLeaderboard('daily');
+        }
+
+        function showShop() {
+            AudioSystem.play('click');
+            document.getElementById('mainMenu').style.display = 'none';
+            document.getElementById('shopPanel').style.display = 'block';
+            renderShop();
+        }
+
+        function showSettings() {
+            AudioSystem.play('click');
+            document.getElementById('mainMenu').style.display = 'none';
+            document.getElementById('settingsPanel').style.display = 'block';
+            updateSettingsUI();
+        }
+
+        // ==================== SETTINGS TOGGLE ====================
+        function toggleSetting(setting) {
+            GameState.settings[setting] = !GameState.settings[setting];
+            Storage.setJSON('settings', GameState.settings);
+            updateSettingsUI();
+            AudioSystem.play('click');
+            if (setting === 'vibration' && GameState.settings.vibration) {
+                vibrate(50);
+            }
+        }
+
+        function updateSettingsUI() {
+            ['sound', 'music', 'vibration', 'animations'].forEach(s => {
+                const toggle = document.getElementById(s + 'Toggle');
+                if (GameState.settings[s]) {
+                    toggle.classList.add('active');
+                    toggle.setAttribute('aria-checked', 'true');
+                } else {
+                    toggle.classList.remove('active');
+                    toggle.setAttribute('aria-checked', 'false');
+                }
+            });
+        }
+
+        // ==================== GAME START ====================
         function startGame(mode) {
-            audio.play('click');
-            gameState.currentMode = mode;
-            gameState.gameActive = true;
-            gameState.gamePaused = false;
-            gameState.gameOver = false;
-            gameState.flippedIndices = [];
-            gameState.matchedPairs = [];
-            gameState.moves = 0;
-            gameState.score = 0;
-            gameState.combo = 0;
-            firstMoveMade = false;
+            AudioSystem.play('click');
+            GameState.currentMode = mode;
+            GameState.gameActive = true;
+            GameState.gamePaused = false;
+            GameState.gameOver = false;
+            GameState.flippedIndices = [];
+            GameState.matchedPairs = [];
+            GameState.moves = 0;
+            GameState.score = 0;
+            GameState.combo = 0;
+            GameState.firstMoveMade = false;
+            GameState.memoryPhase = false;
+            GameState.challengeEffect = null;
 
             switch(mode) {
                 case 'timed':
-                    gameState.timeLeft = CONFIG.timeLimits.timed;
+                    GameState.timeLeft = CONFIG.timeLimits.timed;
+                    startTimer();
+                    break;
+                case 'quick':
+                    GameState.timeLeft = CONFIG.timeLimits.quick;
                     startTimer();
                     break;
                 case 'move':
-                    gameState.movesLeft = CONFIG.moveLimits.move;
+                    GameState.movesLeft = CONFIG.moveLimits.move;
                     break;
                 case 'endless':
-                    gameState.difficulty = 'easy';
+                    GameState.difficulty = 'easy';
                     break;
                 case 'memory':
-                    gameState.memoryPhase = true;
+                    GameState.memoryPhase = true;
+                    break;
+                case 'challenge':
+                    GameState.timeLeft = 60; // default 60 sec
+                    startTimer();
+                    GameState.challengeEffect = CONFIG.challengeEffects[Math.floor(Math.random() * CONFIG.challengeEffects.length)];
                     break;
                 default:
-                    gameState.timeLeft = 0;
+                    GameState.timeLeft = 0;
             }
 
             initializeCards();
 
             document.getElementById('gameMoves').textContent = '0';
-            document.getElementById('gameTime').textContent = formatTime(gameState.timeLeft || 0);
+            document.getElementById('gameTime').textContent = formatTime(GameState.timeLeft || 0);
             document.getElementById('gameScore').textContent = '0';
             document.getElementById('gameModes').style.display = 'none';
             document.getElementById('gameBoard').style.display = 'flex';
@@ -2051,21 +2136,18 @@
         }
 
         function startQuickGame() {
-            gameState.currentMode = 'quick';
-            gameState.timeLeft = CONFIG.timeLimits.quick;
-            startTimer();
             startGame('quick');
         }
 
         function initializeCards() {
-            const gridSize = CONFIG.gridSizes[gameState.difficulty] || 4;
+            const gridSize = CONFIG.gridSizes[GameState.difficulty] || 4;
             const totalCards = gridSize * gridSize;
-            const symbolsNeeded = Math.floor(totalCards / 2);
+            const symbolsNeeded = totalCards / 2;
             const shuffledSymbols = [...cardSymbols].sort(() => Math.random() - 0.5);
             const selectedSymbols = shuffledSymbols.slice(0, symbolsNeeded);
             let cardPairs = [...selectedSymbols, ...selectedSymbols];
             cardPairs = cardPairs.sort(() => Math.random() - 0.5);
-            gameState.cards = cardPairs.map((symbol, index) => ({
+            GameState.cards = cardPairs.map((symbol, index) => ({
                 id: index,
                 symbol: symbol,
                 isFlipped: false,
@@ -2077,103 +2159,128 @@
 
         function renderCards() {
             const container = document.getElementById('cardsContainer');
-            const gridSize = CONFIG.gridSizes[gameState.difficulty] || 4;
+            const gridSize = CONFIG.gridSizes[GameState.difficulty] || 4;
             container.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
             container.innerHTML = '';
-            gameState.cards.forEach((card, index) => {
+            GameState.cards.forEach((card, index) => {
                 const cardElement = document.createElement('div');
                 cardElement.className = 'card';
                 if (card.isFlipped) cardElement.classList.add('flipped');
                 if (card.isMatched) cardElement.classList.add('matched');
+                cardElement.setAttribute('role', 'gridcell');
+                cardElement.setAttribute('aria-label', `Card ${index + 1}, symbol ${card.symbol}`);
+                cardElement.setAttribute('tabindex', '0');
                 cardElement.innerHTML = `
                     <div class="card-front">${card.symbol}</div>
                     <div class="card-back"></div>
                 `;
                 cardElement.addEventListener('click', () => handleCardClick(index));
-                cardElement.addEventListener('touchstart', (e) => {
-                    e.preventDefault();
-                    handleCardClick(index);
+                cardElement.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        handleCardClick(index);
+                    }
                 });
                 container.appendChild(cardElement);
                 card.element = cardElement;
             });
         }
 
+        // ==================== MEMORY PHASE ====================
+        function startMemoryPhase() {
+            GameState.memoryPhase = true;
+            // Flip all cards
+            GameState.cards.forEach(card => {
+                card.element.classList.add('flipped');
+            });
+            setTimeout(() => {
+                // Flip back all unmatched cards
+                GameState.cards.forEach(card => {
+                    if (!card.isMatched) {
+                        card.element.classList.remove('flipped');
+                    }
+                });
+                GameState.memoryPhase = false;
+            }, CONFIG.memoryPhaseDuration);
+        }
+
         // ==================== GAMEPLAY ====================
         function handleCardClick(index) {
-            if (!gameState.gameActive || gameState.gamePaused || gameState.gameOver) return;
+            if (!GameState.gameActive || GameState.gamePaused || GameState.gameOver || GameState.memoryPhase) return;
 
-            if (!firstMoveMade) {
-                pokiGameplayStart();
-                firstMoveMade = true;
+            if (!GameState.firstMoveMade) {
+                Poki.gameplayStart();
+                GameState.firstMoveMade = true;
             }
 
-            const card = gameState.cards[index];
-            if (gameState.flippedIndices.length === 2 ||
-                gameState.flippedIndices.includes(index) ||
+            const card = GameState.cards[index];
+            if (GameState.flippedIndices.length === 2 ||
+                GameState.flippedIndices.includes(index) ||
                 card.isMatched) return;
 
-            audio.play('flip');
+            AudioSystem.play('flip');
+            vibrate(20);
             card.element.classList.add('flipped');
             card.isFlipped = true;
-            gameState.flippedIndices.push(index);
+            GameState.flippedIndices.push(index);
 
-            if (gameState.flippedIndices.length === 2) {
-                gameState.moves++;
-                document.getElementById('gameMoves').textContent = gameState.moves;
+            if (GameState.flippedIndices.length === 2) {
+                GameState.moves++;
+                document.getElementById('gameMoves').textContent = GameState.moves;
 
-                if (gameState.currentMode === 'move') {
-                    gameState.movesLeft--;
-                    if (gameState.movesLeft <= 0) {
+                if (GameState.currentMode === 'move') {
+                    GameState.movesLeft--;
+                    if (GameState.movesLeft <= 0) {
                         gameOver('lose');
                         return;
                     }
                 }
 
-                const firstCard = gameState.cards[gameState.flippedIndices[0]];
-                const secondCard = gameState.cards[gameState.flippedIndices[1]];
+                const firstCard = GameState.cards[GameState.flippedIndices[0]];
+                const secondCard = GameState.cards[GameState.flippedIndices[1]];
 
                 if (firstCard.symbol === secondCard.symbol) {
-                    audio.play('match');
+                    AudioSystem.play('match');
+                    vibrate([50, 50, 50]);
                     setTimeout(() => {
                         firstCard.isMatched = true;
                         secondCard.isMatched = true;
                         firstCard.element.classList.add('matched');
                         secondCard.element.classList.add('matched');
-                        gameState.matchedPairs.push(firstCard.symbol);
-                        gameState.combo++;
+                        GameState.matchedPairs.push(firstCard.symbol);
+                        GameState.combo++;
                         updateCombo();
 
                         const baseScore = CONFIG.baseScore;
-                        const comboBonus = baseScore * CONFIG.comboMultiplier * (gameState.combo - 1);
+                        const comboBonus = baseScore * CONFIG.comboMultiplier * (GameState.combo - 1);
                         const matchScore = baseScore + comboBonus;
-                        gameState.score += matchScore;
-                        document.getElementById('gameScore').textContent = Math.floor(gameState.score);
+                        GameState.score += matchScore;
+                        document.getElementById('gameScore').textContent = Math.floor(GameState.score);
                         updateProgress();
 
-                        if (gameState.matchedPairs.length === gameState.cards.length / 2) {
+                        if (GameState.matchedPairs.length === GameState.cards.length / 2) {
                             gameOver('win');
                         }
-                        gameState.flippedIndices = [];
+                        GameState.flippedIndices = [];
                     }, 500);
                 } else {
-                    gameState.combo = 0;
+                    GameState.combo = 0;
                     updateCombo();
                     setTimeout(() => {
                         firstCard.isFlipped = false;
                         secondCard.isFlipped = false;
                         firstCard.element.classList.remove('flipped');
                         secondCard.element.classList.remove('flipped');
-                        gameState.flippedIndices = [];
+                        GameState.flippedIndices = [];
                     }, 1000);
                 }
             }
         }
 
         function updateCombo() {
-            document.getElementById('comboCount').textContent = gameState.combo;
+            document.getElementById('comboCount').textContent = GameState.combo;
             const comboElement = document.getElementById('comboCounter');
-            if (gameState.combo >= 3) {
+            if (GameState.combo >= 3) {
                 comboElement.style.animation = 'comboPulse 0.5s infinite';
             } else {
                 comboElement.style.animation = 'none';
@@ -2181,17 +2288,17 @@
         }
 
         function updateProgress() {
-            const progress = (gameState.matchedPairs.length / (gameState.cards.length / 2)) * 100;
+            const progress = (GameState.matchedPairs.length / (GameState.cards.length / 2)) * 100;
             document.getElementById('gameProgress').style.width = progress + '%';
         }
 
         function startTimer() {
-            if (gameState.timer) clearInterval(gameState.timer);
-            gameState.timer = setInterval(() => {
-                if (gameState.gameActive && !gameState.gamePaused && !gameState.gameOver) {
-                    gameState.timeLeft--;
-                    document.getElementById('gameTime').textContent = formatTime(gameState.timeLeft);
-                    if (gameState.timeLeft <= 0) gameOver('lose');
+            if (GameState.timer) clearInterval(GameState.timer);
+            GameState.timer = setInterval(() => {
+                if (GameState.gameActive && !GameState.gamePaused && !GameState.gameOver) {
+                    GameState.timeLeft--;
+                    document.getElementById('gameTime').textContent = formatTime(GameState.timeLeft);
+                    if (GameState.timeLeft <= 0) gameOver('lose');
                 }
             }, 1000);
         }
@@ -2204,38 +2311,49 @@
 
         // ==================== GAME OVER ====================
         function gameOver(result) {
-            if (gameState.gameOver) return;
-            gameState.gameActive = false;
-            gameState.gameOver = true;
-            clearInterval(gameState.timer);
+            if (GameState.gameOver) return;
+            GameState.gameActive = false;
+            GameState.gameOver = true;
+            clearInterval(GameState.timer);
 
-            pokiGameplayStop();
-            audio.play(result === 'win' ? 'win' : 'lose');
+            Poki.gameplayStop();
+            AudioSystem.play(result === 'win' ? 'win' : 'lose');
+            if (result === 'win') vibrate([100, 50, 100]);
 
             if (result === 'win') {
-                gameState.gamesPlayed++;
-                gameState.totalScore += gameState.score;
-                gameState.coins += Math.floor(gameState.score / 10);
-                safeLocalStorageSet('gamesPlayed', gameState.gamesPlayed);
-                safeLocalStorageSet('totalScore', gameState.totalScore);
-                safeLocalStorageSet('coins', gameState.coins);
+                GameState.gamesPlayed++;
+                GameState.totalScore += GameState.score;
+                GameState.coins += Math.floor(GameState.score / 10);
+                Storage.set('gamesPlayed', GameState.gamesPlayed);
+                Storage.set('totalScore', GameState.totalScore);
+                Storage.set('coins', GameState.coins);
                 updateLeaderboard();
                 triggerConfetti();
+
+                if (GameState.currentMode === 'endless') {
+                    // Increase difficulty
+                    const currentIndex = CONFIG.difficultyProgression.indexOf(GameState.difficulty);
+                    if (currentIndex < CONFIG.difficultyProgression.length - 1) {
+                        GameState.difficulty = CONFIG.difficultyProgression[currentIndex + 1];
+                    } else {
+                        GameState.difficulty = CONFIG.difficultyProgression[CONFIG.difficultyProgression.length - 1];
+                    }
+                }
             }
 
             document.getElementById('resultIcon').textContent = result === 'win' ? '🏆' : '💔';
             document.getElementById('resultTitle').textContent = result === 'win' ? 'VICTORY!' : 'GAME OVER';
-            document.getElementById('resultMoves').textContent = gameState.moves;
-            document.getElementById('resultTime').textContent = formatTime(gameState.timeLeft || 0);
-            document.getElementById('resultScore').textContent = gameState.score;
+            document.getElementById('resultMoves').textContent = GameState.moves;
+            document.getElementById('resultTime').textContent = formatTime(GameState.timeLeft || 0);
+            document.getElementById('resultScore').textContent = GameState.score;
             document.getElementById('resultModal').style.display = 'flex';
         }
 
         function playAgain() {
             document.getElementById('resultModal').style.display = 'none';
-            pokiShowCommercial().finally(() => {
-                startGame(gameState.currentMode);
-                firstMoveMade = false;
+            Poki.showCommercial().finally(() => {
+                startGame(GameState.currentMode);
+                GameState.firstMoveMade = false;
             });
         }
 
@@ -2245,54 +2363,149 @@
 
         // ==================== PAUSE ====================
         function togglePause() {
-            gameState.gamePaused = !gameState.gamePaused;
-            document.getElementById('pauseMenu').style.display = gameState.gamePaused ? 'flex' : 'none';
-            if (gameState.gamePaused) pokiGameplayStop();
-            else pokiGameplayStart();
-            audio.play('click');
+            GameState.gamePaused = !GameState.gamePaused;
+            document.getElementById('pauseMenu').style.display = GameState.gamePaused ? 'flex' : 'none';
+            if (GameState.gamePaused) {
+                Poki.gameplayStop();
+                clearInterval(GameState.timer);
+            } else {
+                Poki.gameplayStart();
+                startTimer();
+            }
+            AudioSystem.play('click');
         }
 
         function resumeGame() {
-            gameState.gamePaused = false;
+            GameState.gamePaused = false;
             document.getElementById('pauseMenu').style.display = 'none';
-            pokiGameplayStart();
-            audio.play('click');
+            Poki.gameplayStart();
+            startTimer();
+            AudioSystem.play('click');
         }
 
         function restartGame() {
             document.getElementById('pauseMenu').style.display = 'none';
-            startGame(gameState.currentMode);
-            firstMoveMade = false;
+            startGame(GameState.currentMode);
+            GameState.firstMoveMade = false;
         }
 
         function pauseAndMenu() {
             togglePause();
         }
 
-        // ==================== ACHIEVEMENTS ====================
-        const achievementsList = [
-            { id: 'first_win', title: 'First Victory', description: 'Win your first game', icon: '🏆', requirement: 1, type: 'wins', points: 100 },
-            { id: 'speed_demon', title: 'Speed Demon', description: 'Complete a game in under 30 seconds', icon: '⚡', requirement: 30, type: 'time', points: 200 },
-            { id: 'perfect_game', title: 'Perfect Match', description: 'Complete a game with 0 mistakes', icon: '💯', requirement: 0, type: 'mistakes', points: 500 },
-            { id: 'combo_master', title: 'Combo Master', description: 'Achieve a 10x combo', icon: '🔥', requirement: 10, type: 'combo', points: 300 },
-            { id: 'collector', title: 'Collector', description: 'Play 100 games', icon: '🎮', requirement: 100, type: 'games', points: 400 },
-            { id: 'millionaire', title: 'Millionaire', description: 'Earn 10,000 total score', icon: '💰', requirement: 10000, type: 'score', points: 1000 },
-            { id: 'daily_champion', title: 'Daily Champion', description: 'Complete the daily challenge 7 days in a row', icon: '📅', requirement: 7, type: 'daily', points: 700 },
-            { id: 'power_user', title: 'Power User', description: 'Use 50 power-ups', icon: '⚡', requirement: 50, type: 'powerups', points: 600 }
-        ];
+        // ==================== POWER-UPS ====================
+        async function usePowerUp(type) {
+            if (!GameState.gameActive || GameState.gamePaused) return;
 
-        function showAchievements() {
-            audio.play('click');
-            document.getElementById('mainMenu').style.display = 'none';
-            document.getElementById('achievementsPanel').style.display = 'block';
-            renderAchievements();
+            if (GameState.powerUps[type] > 0) {
+                GameState.powerUps[type]--;
+                Storage.set(`powerUp${type.charAt(0).toUpperCase() + type.slice(1)}`, GameState.powerUps[type]);
+                updateUI();
+                activatePowerUp(type);
+                AudioSystem.play('powerup');
+            } else {
+                AudioSystem.play('click');
+                const watched = await showRewardedAdDialog(type);
+                if (watched) {
+                    activatePowerUp(type);
+                    AudioSystem.play('powerup');
+                    showToast('Thanks for watching!', 'success');
+                }
+            }
         }
 
+        function activatePowerUp(type) {
+            switch(type) {
+                case 'hint': useHint(); break;
+                case 'shuffle': useShuffle(); break;
+                case 'time': useTime(); break;
+                case 'peek': usePeek(); break;
+            }
+        }
+
+        function useHint() {
+            const unmatched = GameState.cards.filter(c => !c.isMatched);
+            if (unmatched.length === 0) return;
+            const randomIndex = Math.floor(Math.random() * unmatched.length / 2) * 2;
+            const symbol = unmatched[randomIndex].symbol;
+            const hintCards = GameState.cards.filter(c => c.symbol === symbol && !c.isMatched);
+            hintCards.forEach(card => {
+                card.element.style.animation = 'pulse 0.5s 3';
+                setTimeout(() => { card.element.style.animation = ''; }, 1500);
+            });
+        }
+
+        function useShuffle() {
+            const unmatched = GameState.cards.filter(c => !c.isMatched);
+            const unmatchedIndices = unmatched.map(c => c.id);
+            const symbols = unmatched.map(c => c.symbol);
+            // Fisher-Yates shuffle
+            for (let i = symbols.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [symbols[i], symbols[j]] = [symbols[j], symbols[i]];
+            }
+            symbols.forEach((symbol, i) => {
+                const card = GameState.cards[unmatchedIndices[i]];
+                card.symbol = symbol;
+                card.element.querySelector('.card-front').textContent = symbol;
+                if (GameState.settings.animations) {
+                    card.element.style.animation = 'fadeIn 0.5s';
+                    setTimeout(() => { card.element.style.animation = ''; }, 500);
+                }
+            });
+        }
+
+        function useTime() {
+            GameState.timeLeft += 30;
+            document.getElementById('gameTime').textContent = formatTime(GameState.timeLeft);
+            showToast('+30 seconds!', 'success');
+        }
+
+        function usePeek() {
+            GameState.cards.forEach(card => {
+                if (!card.isMatched) card.element.classList.add('flipped');
+            });
+            setTimeout(() => {
+                GameState.cards.forEach(card => {
+                    if (!card.isMatched && !card.isFlipped) card.element.classList.remove('flipped');
+                });
+            }, 1000);
+        }
+
+        async function showRewardedAdDialog(powerUpType) {
+            return new Promise((resolve) => {
+                const dialog = document.createElement('div');
+                dialog.className = 'rewarded-dialog';
+                dialog.innerHTML = `
+                    <div class="rewarded-content">
+                        <h3>Out of ${powerUpType}!</h3>
+                        <p>Watch a short ad to get one free ${powerUpType}?</p>
+                        <div class="rewarded-buttons">
+                            <button class="reward-no green-btn">Continue</button>
+                            <button class="reward-yes film-btn">🎬 Watch Ad</button>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(dialog);
+
+                dialog.querySelector('.reward-no').onclick = () => {
+                    dialog.remove();
+                    resolve(false);
+                };
+                dialog.querySelector('.reward-yes').onclick = async () => {
+                    dialog.remove();
+                    const success = await Poki.showRewarded();
+                    resolve(success);
+                };
+            });
+        }
+
+        // ==================== ACHIEVEMENTS ====================
         function renderAchievements() {
             const grid = document.getElementById('achievementsGrid');
             grid.innerHTML = '';
             achievementsList.forEach(achievement => {
-                const isUnlocked = gameState.achievements[achievement.id];
+                const isUnlocked = GameState.achievements[achievement.id];
                 const progress = getAchievementProgress(achievement);
                 const percent = (progress / achievement.requirement) * 100;
                 const card = document.createElement('div');
@@ -2312,16 +2525,16 @@
 
         function getAchievementProgress(achievement) {
             switch(achievement.type) {
-                case 'wins': return gameState.gamesPlayed;
-                case 'time': return gameState.moves;
-                case 'score': return gameState.totalScore;
+                case 'wins': return GameState.gamesPlayed;
+                case 'time': return GameState.moves;
+                case 'score': return GameState.totalScore;
                 default: return 0;
             }
         }
 
         function checkAchievements() {
             achievementsList.forEach(achievement => {
-                if (!gameState.achievements[achievement.id]) {
+                if (!GameState.achievements[achievement.id]) {
                     const progress = getAchievementProgress(achievement);
                     if (progress >= achievement.requirement) unlockAchievement(achievement);
                 }
@@ -2329,30 +2542,28 @@
         }
 
         function unlockAchievement(achievement) {
-            gameState.achievements[achievement.id] = true;
-            safeLocalStorageSetJSON('achievements', gameState.achievements);
+            GameState.achievements[achievement.id] = true;
+            Storage.setJSON('achievements', GameState.achievements);
             showToast(`🎉 ${achievement.title} unlocked! +${achievement.points}`, 'success');
-            gameState.totalScore += achievement.points;
-            safeLocalStorageSet('totalScore', gameState.totalScore);
+            GameState.totalScore += achievement.points;
+            Storage.set('totalScore', GameState.totalScore);
         }
 
         // ==================== LEADERBOARD ====================
-        function showLeaderboard() {
-            audio.play('click');
-            document.getElementById('mainMenu').style.display = 'none';
-            document.getElementById('leaderboardPanel').style.display = 'block';
-            switchLeaderboard('daily');
-        }
-
         function switchLeaderboard(period) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+            // Find the button that matches the period and set active
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                if (btn.textContent.toLowerCase().includes(period)) {
+                    btn.classList.add('active');
+                }
+            });
             renderLeaderboard(period);
         }
 
         function renderLeaderboard(period) {
             const list = document.getElementById('leaderboardList');
-            const leaderboardData = gameState.leaderboard[period] || [];
+            const leaderboardData = GameState.leaderboard[period] || [];
             list.innerHTML = '';
             if (leaderboardData.length === 0) {
                 list.innerHTML = '<div style="text-align: center; color: white; padding: 50px;">No scores yet!</div>';
@@ -2364,14 +2575,14 @@
                 item.innerHTML = `
                     <div class="rank rank-${index + 1}">${index + 1}</div>
                     <div class="player-info">
-                        <img src="${entry.avatar}" class="player-avatar-small">
+                        <img src="${entry.avatar}" class="player-avatar-small" alt="">
                         <span class="player-name-small">${entry.name}</span>
                     </div>
                     <div class="player-score">${entry.score}</div>
                 `;
                 list.appendChild(item);
             });
-            const playerRank = leaderboardData.findIndex(e => e.name === gameState.playerName) + 1;
+            const playerRank = leaderboardData.findIndex(e => e.name === GameState.playerName) + 1;
             if (playerRank > 0) {
                 document.getElementById('playerRank').innerHTML = `
                     <div class="player-rank-info">
@@ -2384,28 +2595,21 @@
         function updateLeaderboard() {
             const periods = ['daily', 'weekly', 'alltime'];
             periods.forEach(period => {
-                if (!gameState.leaderboard[period]) gameState.leaderboard[period] = [];
-                gameState.leaderboard[period].push({
-                    name: gameState.playerName,
-                    avatar: gameState.playerAvatar,
-                    score: gameState.score,
+                if (!GameState.leaderboard[period]) GameState.leaderboard[period] = [];
+                GameState.leaderboard[period].push({
+                    name: GameState.playerName,
+                    avatar: GameState.playerAvatar,
+                    score: GameState.score,
                     date: new Date().toISOString()
                 });
-                gameState.leaderboard[period] = gameState.leaderboard[period]
+                GameState.leaderboard[period] = GameState.leaderboard[period]
                     .sort((a, b) => b.score - a.score)
                     .slice(0, 100);
             });
-            safeLocalStorageSetJSON('leaderboard', gameState.leaderboard);
+            Storage.setJSON('leaderboard', GameState.leaderboard);
         }
 
         // ==================== SHOP ====================
-        function showShop() {
-            audio.play('click');
-            document.getElementById('mainMenu').style.display = 'none';
-            document.getElementById('shopPanel').style.display = 'block';
-            renderShop();
-        }
-
         function renderShop() {
             const shopItems = document.getElementById('shopItems');
             const items = [
@@ -2422,7 +2626,7 @@
                         <div class="shop-item-desc">${item.desc}</div>
                     </div>
                     <div class="shop-item-price">
-                        <i class="fas fa-coins"></i>
+                        <i class="fas fa-coins" aria-hidden="true"></i>
                         <span>${item.price}</span>
                     </div>
                     <button class="buy-btn" onclick="buyPowerUp('${item.type}', ${item.price})">BUY</button>
@@ -2436,27 +2640,18 @@
         }
 
         function buyPowerUp(type, price) {
-            if (gameState.coins < price) {
+            if (GameState.coins < price) {
                 showToast('Not enough coins!', 'error');
                 return;
             }
-            gameState.coins -= price;
-            gameState.powerUps[type]++;
-            safeLocalStorageSet('coins', gameState.coins);
-            safeLocalStorageSet(`powerUp${type.charAt(0).toUpperCase() + type.slice(1)}`, gameState.powerUps[type]);
-            document.getElementById('playerCoins').textContent = gameState.coins;
+            if (!confirm(`Are you sure you want to buy ${type} for ${price} coins?`)) return;
+            GameState.coins -= price;
+            GameState.powerUps[type]++;
+            Storage.set('coins', GameState.coins);
+            Storage.set(`powerUp${type.charAt(0).toUpperCase() + type.slice(1)}`, GameState.powerUps[type]);
+            document.getElementById('playerCoins').textContent = GameState.coins;
             updateUI();
             showToast(`Bought ${type} power-up!`, 'success');
-        }
-
-        // ==================== SETTINGS ====================
-        function showSettings() {
-            audio.play('click');
-            // Simple settings toggle for sound
-            gameState.settings.sound = !gameState.settings.sound;
-            audio.soundEnabled = gameState.settings.sound;
-            safeLocalStorageSetJSON('settings', gameState.settings);
-            showToast(`Sound ${gameState.settings.sound ? 'ON' : 'OFF'}`, 'info');
         }
 
         // ==================== DAILY CHALLENGE ====================
@@ -2483,17 +2678,13 @@
 
         // ==================== SHARE ====================
         function shareScore() {
-            const text = `I just scored ${gameState.score} points in Puzzle Master Elite! 🎮 Can you beat my score?`;
+            const text = `I just scored ${GameState.score} points in Puzzle Master Elite! 🎮 Can you beat my score?`;
             if (navigator.share) {
                 navigator.share({ title: 'Puzzle Master Score', text, url: window.location.href })
                     .catch(() => fallbackShare(text));
             } else {
                 fallbackShare(text);
             }
-        }
-
-        function shareVictory() {
-            shareScore();
         }
 
         function fallbackShare(text) {
@@ -2506,7 +2697,7 @@
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
             toast.innerHTML = `
-                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}" aria-hidden="true"></i>
                 <span>${message}</span>
             `;
             container.appendChild(toast);
@@ -2524,29 +2715,71 @@
                 'https://api.dicebear.com/7.x/avataaars/svg?seed=Legend',
                 'https://api.dicebear.com/7.x/avataaars/svg?seed=Hero'
             ];
-            const currentIndex = avatars.indexOf(gameState.playerAvatar);
+            const currentIndex = avatars.indexOf(GameState.playerAvatar);
             const nextIndex = (currentIndex + 1) % avatars.length;
-            gameState.playerAvatar = avatars[nextIndex];
-            document.getElementById('playerAvatar').src = gameState.playerAvatar;
-            safeLocalStorageSet('playerAvatar', gameState.playerAvatar);
+            GameState.playerAvatar = avatars[nextIndex];
+            document.getElementById('playerAvatar').src = GameState.playerAvatar;
+            Storage.set('playerAvatar', GameState.playerAvatar);
         }
 
         document.getElementById('playerName').addEventListener('input', (e) => {
-            gameState.playerName = e.target.value.toUpperCase();
-            safeLocalStorageSet('playerName', gameState.playerName);
+            GameState.playerName = e.target.value.toUpperCase();
+            Storage.set('playerName', GameState.playerName);
         });
 
-        // ==================== MISC ====================
-        document.addEventListener('touchstart', (e) => {
-            if (e.touches.length > 1) e.preventDefault();
-        }, { passive: false });
+        // ==================== KEYBOARD NAVIGATION ====================
+        function setupKeyboardNav() {
+            let selectedCardIndex = 0;
+            document.addEventListener('keydown', (e) => {
+                if (!GameState.gameActive || GameState.gamePaused) return;
+                const cards = document.querySelectorAll('.card');
+                if (cards.length === 0) return;
+                // Remove previous focus
+                cards.forEach(c => c.style.outline = 'none');
+                // Arrow keys
+                const gridSize = CONFIG.gridSizes[GameState.difficulty] || 4;
+                if (e.key === 'ArrowRight') {
+                    selectedCardIndex = (selectedCardIndex + 1) % cards.length;
+                } else if (e.key === 'ArrowLeft') {
+                    selectedCardIndex = (selectedCardIndex - 1 + cards.length) % cards.length;
+                } else if (e.key === 'ArrowDown') {
+                    selectedCardIndex = (selectedCardIndex + gridSize) % cards.length;
+                } else if (e.key === 'ArrowUp') {
+                    selectedCardIndex = (selectedCardIndex - gridSize + cards.length) % cards.length;
+                } else if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleCardClick(selectedCardIndex);
+                    return;
+                } else {
+                    return;
+                }
+                e.preventDefault();
+                cards[selectedCardIndex].style.outline = '2px solid var(--accent)';
+                cards[selectedCardIndex].focus();
+            });
+        }
 
-        window.addEventListener('resize', () => {
-            if (gameState.gameActive) renderCards();
-        });
-
-        // For debugging (optional)
-        window.gameState = gameState;
+        // Expose functions globally
+        window.showMainMenu = showMainMenu;
+        window.showGameModes = showGameModes;
+        window.startGame = startGame;
+        window.startQuickGame = startQuickGame;
+        window.togglePause = togglePause;
+        window.resumeGame = resumeGame;
+        window.restartGame = restartGame;
+        window.pauseAndMenu = pauseAndMenu;
+        window.usePowerUp = usePowerUp;
+        window.showAchievements = showAchievements;
+        window.showLeaderboard = showLeaderboard;
+        window.showShop = showShop;
+        window.showSettings = showSettings;
+        window.switchLeaderboard = switchLeaderboard;
+        window.buyPowerUp = buyPowerUp;
+        window.shareScore = shareScore;
+        window.changeAvatar = changeAvatar;
+        window.startDailyChallenge = startDailyChallenge;
+        window.playAgain = playAgain;
+        window.toggleSetting = toggleSetting;
     </script>
 </body>
 </html>
